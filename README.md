@@ -13,6 +13,8 @@ The script reads a CSV file containing people data, selects specific columns, li
 ├── data/
 │   └── people.csv
 ├── main.py
+├── pyproject.toml
+├── uv.lock
 └── README.md
 ```
 
@@ -24,13 +26,16 @@ The script reads a CSV file containing people data, selects specific columns, li
 
 ## Requirements
 
-Make sure you have Python **3.9+** installed.
+* Python **3.13+**
+* [uv](https://docs.astral.sh/uv/) (install on macOS with `brew install uv`)
 
-Install the required Python libraries:
+Dependencies (`duckdb`, `pandas`) are declared in `pyproject.toml` and pinned in `uv.lock`. Install them into a project virtual environment (`.venv/`) with:
 
 ```bash
-pip install duckdb pandas
+uv sync
 ```
+
+> **Troubleshooting:** If you see `ModuleNotFoundError: No module named 'duckdb'`, you ran the script with your system Python instead of the project environment. Run `uv sync`, then use `uv run python main.py` (or activate the environment first with `source .venv/bin/activate` and then run `python3 main.py`).
 
 ---
 
@@ -59,8 +64,12 @@ Jane,Smith,F,1990-06-20,Manager
 From the project root directory, run:
 
 ```bash
-uv run python main.py
+uv run python main.py                    # preview 5 rows, then run every query
+uv run python main.py top_titles         # run one (or several) queries by name
+uv run python main.py --list             # list available queries
 ```
+
+Available queries: `gender_counts`, `top_titles`, `oldest_people`, `born_by_decade`, `email_domains`, `average_age_by_gender`. To add your own, add an entry to the `QUERIES` dict in `main.py` and select `FROM people`.
 
 ---
 
@@ -106,3 +115,4 @@ Jane       Smith     F      1990-06-20   Manager
 ## License
 
 This project is provided for educational and internal use. Add a license if you plan to distribute it publicly.
+
